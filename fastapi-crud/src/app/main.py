@@ -1,13 +1,23 @@
 # src/app/main.py
 from fastapi import FastAPI
-from typing import List
 
+from app.api import ping
+from app.db import engine, database, metadata
+
+metadata.create_all(engine)
 
 app = FastAPI()
 
 
-@app.get('/ping')
-async def pong() -> dict:
-    # some async operation could happen here
-    # example: `notes = await get_all_notes()`
-    return {"ping": "pong"}
+@app.on_event("startup")
+async def startup():
+    await database.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await database.disconnect()
+
+
+app.include_router(ping.router)
+app.include_router(notes.router, prefix="/notes", tags=["notes"])
