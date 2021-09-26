@@ -23,6 +23,12 @@ async def put(id: int, payload: NoteSchema):
     return await database.execute(query=query)
 
 
-async def delete(id: int):
-    query = notes.delete().where(id == notes.c.id)
-    return await database.execute(query=query)
+@router.delete("/{id}/", response_model=NoteDB)
+async def delete_note(id: int = Path(..., gt=0)):
+    note = await crud.get(id)
+    if not note:
+        raise HTTPException(status_code=404, detail="Note not found")
+
+    await crud.delete(id)
+
+    return note
