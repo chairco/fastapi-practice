@@ -1,7 +1,7 @@
 # src/app/db.py
 import os
 
-from database import Database
+from databases import Database
 from sqlalchemy import (
     Column,
     DateTime,
