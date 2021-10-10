@@ -1,5 +1,7 @@
 # src/app/db.py
 import os
+import pathlib
+import dotenv
 
 from databases import Database
 from sqlalchemy import (
@@ -13,6 +15,12 @@ from sqlalchemy import (
 )
 from sqlalchemy.sql import func
 
+
+ROOT_DIR_PATH = pathlib.Path(__file__).resolve().parent.parent
+
+dotenv_path = ROOT_DIR_PATH.joinpath('.env')
+if dotenv_path.exists():
+    dotenv.load_dotenv(str(dotenv_path))
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
